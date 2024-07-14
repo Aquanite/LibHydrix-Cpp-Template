@@ -10,13 +10,13 @@ char scancodemap[58] = {
 char upperscancode[58] = {
     0, 0, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 0, 0, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', 0, 0, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', '~', 0, '|', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', 0, '*', 0, ' '
 };
-static inline bool GetKeyDown(char scancode)
+bool GetKeyDown(char scancode)
 {
-    return inb(0x60) == scancode;
+    return PortIO::InByte(0x60) == scancode;
 }
-inline char getScancode()
+inline uint8_t getScancode()
 {
-    return inb(0x60);
+    return PortIO::InByte(0x60);
 }
 bool AllowKeyboard = true;
 
@@ -29,13 +29,13 @@ void EnableKeyboard()
     AllowKeyboard = true;
 }
 
-void keyboard_handler(registers_t *r)
+void KeyboardHandler(registers_t *r)
 {
     if (!AllowKeyboard)
     {
         return;
     }
-    char scancode = getScancode();
+    uint8_t scancode = getScancode();
     if (scancode < 58 && GetKeyDown(scancode))
     {
         //if shift is pressed, capitalize, if backspace, send \b to console
@@ -65,12 +65,12 @@ void keyboard_handler(registers_t *r)
     return;
 }
 
-void Keyboard_Init(Console* console)
+void KeyboardInit(Console* console)
 {
     Keyboard_Console_IDT = console;
 }
 
-uint64_t Keyboard_GetKey()
+uint64_t KeyboardGetKey()
 {
     return (uint64_t)LastScancode;
 }

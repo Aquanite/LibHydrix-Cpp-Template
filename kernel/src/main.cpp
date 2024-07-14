@@ -36,7 +36,7 @@ volatile limine_hhdm_request hhdm_request = {
 Graphics graphics;
 Console console;
 
-extern "C" void _start() { 
+extern void kernel_main() { 
     #pragma region "Limine Final Setup"
     if (LIMINE_BASE_REVISION_SUPPORTED == false) {
         hcf();
@@ -53,35 +53,35 @@ extern "C" void _start() {
     limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
     limine_memmap_response *memmap = memmap_request.response;
     limine_hhdm_response *hhdm = hhdm_request.response;
-    heap_init(hhdm->offset);
-    graphics.Init((uint32_t*)framebuffer->address, framebuffer->width, framebuffer->height, framebuffer->pitch);
+    InitializeHeap(hhdm->offset);
+    graphics.Init((uint32_t*)framebuffer->address, framebuffer->width, framebuffer->height, framebuffer->pitch, framebuffer->bpp);
     console.Init(&graphics, 16, true);
-    set_isr_console(&console);
-    Keyboard_Init(&console);
-    set_mouse_console(&console);
-    syscall_init(&console);
-    gdt_init();
-    isr_install();
-    enable_interrupts();
-    set_pit_freq(1000); // 1000 Hz (1ms)
+    SetISRConsole(&console);
+    KeyboardInit(&console);
+    SetMouseConsole(&console);
+    InitializeSyscall(&console);
+    InitializeGDT();
+    InitializeISR();
+    EnableInterrupts();
+    SetPITFrequency(1000); // 1000 Hz (1ms)
     DisableKeyboard();
     FPU::Enable();
     rand_seed = (long int)framebuffer + (long int)memmap + (long int)hhdm;
-    uint64_t mem = _retrieve_total_memory(memmap);
-    char* memstrbyte = to_string(mem);
-    char* memstrkb = to_string(mem / 1024);
-    char* memstrmb = to_string(mem / 1024 / 1024);
+    uint64_t mem = RetrieveTotalMemory(memmap);
+    char* memstrbyte = ToString(mem);
+    char* memstrkb = ToString(mem / 1024);
+    char* memstrmb = ToString(mem / 1024 / 1024);
     while (true)
     {
         console.Clear();
-        graphics.put_line(rand() % graphics.width, 0, rand() % graphics.width, graphics.height, rgb(255, 0, 0));
-        graphics.put_line(0, rand() % graphics.height, graphics.width, rand() % graphics.height, rgb(0, 255, 0));
-        console.WriteLine("Welcome to LibHydrix!", rgb(0, 255, 0));
-        console.WriteLine(strcat("Total Memory  (B): ", memstrbyte), rgb(255, 255, 0));
-        console.WriteLine(strcat("Total Memory (KB): ", memstrkb), rgb(0, 255, 255));
-        console.WriteLine(strcat("Total Memory (MB): ", memstrmb), rgb(255, 0, 255));
+        graphics.DrawLine(Random() % graphics.Width, 0, Random() % graphics.Width, graphics.Height, IColor::RGB(255, 0, 0));
+        graphics.DrawLine(0, Random() % graphics.Height, graphics.Width, Random() % graphics.Height, IColor::RGB(0, 255, 0));
+        console.WriteLine("Welcome to LibHydrix!", IColor::RGB(0, 255, 0));
+        console.WriteLine(StringConcatenate("Total Memory  (B): ", memstrbyte), IColor::RGB(255, 255, 0));
+        console.WriteLine(StringConcatenate("Total Memory (KB): ", memstrkb), IColor::RGB(0, 255, 255));
+        console.WriteLine(StringConcatenate("Total Memory (MB): ", memstrmb), IColor::RGB(255, 0, 255));
         for (uint32_t i = 0; i < 0xFFFFFFFF; i++);
-        graphics.swap();
+        graphics.Display();
     }
     halt(); 
 }

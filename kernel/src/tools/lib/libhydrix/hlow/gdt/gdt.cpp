@@ -2,7 +2,7 @@
 extern "C" void _loadGDTandTSS_S(struct GDTPtr* gdtPtr);
 
 static struct TaskStateSegment taskss;
-static struct GDT gdt;
+static GDT gdt;
 static struct GDTPtr gdtPtr;
 
 void create_descriptors()
@@ -80,7 +80,7 @@ void create_descriptors()
 }
 
 //create descriptors and load GDT + TSS
-void gdt_init()
+void InitializeGDT()
 {
     create_descriptors();
 

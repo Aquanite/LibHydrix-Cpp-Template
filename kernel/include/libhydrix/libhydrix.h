@@ -19,10 +19,7 @@
 #include <libhydrix/hlow/idt/isr.h>
 #include <libhydrix/hlow/pic/pic.h>
 #include <libhydrix/hlow/pit/pit.h>
-#include <libhydrix/hlow/scheduler/process.h>
-#include <libhydrix/hlow/scheduler/scheduler.h>
 #include <libhydrix/hlutil/hlmreq.h>
-#include <libhydrix/hmath/fast/fastmath.h>
 #include <libhydrix/hmath/floatmath.h>
 #include <libhydrix/hmath/higherbitmath.h>
 #include <libhydrix/hmath/intmath.h>
@@ -33,3 +30,6 @@
 #include <libhydrix/hstring/string.h>
 #include <libhydrix/hsyscall/syscall.h>
 #include <libhydrix/sdefs.h>
+#include <libhydrix/htime/htime.h>
+#include <libhydrix/hlow/pci/pci.h>
+#include <libhydrix/hgl/image.h>

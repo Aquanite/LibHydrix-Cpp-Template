@@ -37,7 +37,8 @@ struct TaskStateSegment
 __attribute__((aligned(4096)))
 
 /// @brief The Global Descriptor Table
-struct GDT
+
+typedef struct
 {
     struct GDTDescriptor   null;
     struct GDTDescriptor   kernel_code;
@@ -49,8 +50,7 @@ struct GDT
     struct GDTDescriptor   ovmf_code;
     struct GDTDescriptor   tss_low;
     struct GDTDescriptor   tss_high;
-} __attribute__((packed)); //packed means no padding
-
+} __attribute__((packed)) GDT;
 /// @brief The GDT Pointer
 struct GDTPtr
 {
@@ -58,4 +58,4 @@ struct GDTPtr
     uint64_t base_64;
 } __attribute__((packed));
 /// @brief Initialize the GDT
-void gdt_init();
+void InitializeGDT();
