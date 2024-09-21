@@ -18,15 +18,15 @@ endef
 # It is suggested to use a custom built cross toolchain to build a kernel.
 # We are using the standard "c++" here, it may work by using
 # the host system's toolchain, but this is not guaranteed.
-override DEFAULT_CXX := ../compiler/bin/x86_64-elf-g++
+override DEFAULT_CXX := g++
 $(eval $(call DEFAULT_VAR,CXX,$(DEFAULT_CXX)))
 
 # Same thing for "cc" (the C compiler).
-override DEFAULT_CC := cc
+override DEFAULT_CC := gcc
 $(eval $(call DEFAULT_VAR,CC,$(DEFAULT_CC)))
 
 # Same thing for "ld" (the linker).
-override DEFAULT_LD := ../compiler/bin/x86_64-elf-ld
+override DEFAULT_LD := ld
 $(eval $(call DEFAULT_VAR,LD,$(DEFAULT_LD)))
 
 # User controllable C++ flags.
@@ -53,6 +53,7 @@ $(eval $(call DEFAULT_VAR,LDFLAGS,$(DEFAULT_LDFLAGS)))
 override SHARED_FLAGS := \
     -Wall \
     -Wextra \
+    -Werror \
     -Wno-write-strings \
     -ffreestanding \
     -fno-stack-protector \
@@ -63,24 +64,33 @@ override SHARED_FLAGS := \
     -march=x86-64 \
     -m80387 \
     -mmmx \
-    -msse \
-    -msse2 \
+    -msse4.2 \
     -mno-red-zone \
     -Wno-unused-variable \
     -Wno-maybe-uninitialized \
     -Wno-sign-compare \
     -Wno-unused-parameter \
+    -Wno-unused-but-set-variable \
+    -Wno-error=int-to-pointer-cast \
+    -Wno-int-to-pointer-cast \
+    -Wno-error=array-bounds= \
+    -Wno-unused-function \
     -O2 \
-    -g \
-
+    -finline-functions \
+    -funroll-loops \
+    -fomit-frame-pointer \
+    -mfpmath=sse \
+    -I./include \
+    -I./include/libhydrix \
+    -Wno-unknown-pragmas \
+    -Wno-volatile \
 
 # Internal C++ flags that should not be changed by the user.
 override CXXFLAGS += \
     -std=gnu++20 \
+    -fno-permissive \
     -fno-rtti \
     -fno-exceptions \
-    -I./include \
-    -I./include/libhydrix \
     $(SHARED_FLAGS)
 
 # Internal C flags that should not be changed by the user.
@@ -108,7 +118,7 @@ override LDFLAGS += \
 # Internal nasm flags that should not be changed by the user.
 override NASMFLAGS += \
     -Wall \
-    -f elf64
+    -f elf64 \
 
 # Use "find" to glob all *.cpp, *.c, *.S, and *.asm files in the tree and obtain the
 # object and header dependency file names.

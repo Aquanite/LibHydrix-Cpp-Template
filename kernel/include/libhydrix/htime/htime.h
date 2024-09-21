@@ -1,4 +1,6 @@
 #pragma once
+#include <stdint.h>
+#include <stddef.h>
 void InitializeTime();
 int TimeGetSeconds();
 int TimeGetMinutes();
@@ -8,16 +10,16 @@ int TimeGetMonth();
 int TimeGetYear();
 int TimeGetCentury();
 int TimeGetDayOfTheWeek();
-
+uint64_t GetSystemTime();
 
 long long TimeSinceBootMS();
 long long TimeCurrentTime();
 
 typedef struct {
-    int seconds;
-    int Minimumutes;
-    int hours;
-    bool pm;
+    int Seconds;
+    int Minutes;
+    int Hours;
+    bool PM;
 } Time_t;
 
 typedef enum {

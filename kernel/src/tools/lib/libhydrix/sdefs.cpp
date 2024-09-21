@@ -1,6 +1,6 @@
 #include <libhydrix/sdefs.h>
 #include <libhydrix/hmem/smem/heap.h>
-BMPI Stretch_BMPI(BMPI bmp, int width, int height)
+BMPI StretchBMPI(BMPI bmp, int width, int height)
 {
     BMPI newbmp;
     newbmp.width = width;
@@ -16,7 +16,7 @@ BMPI Stretch_BMPI(BMPI bmp, int width, int height)
     return newbmp;
 }
 
-BMPA Stretch_BMPA(BMPA bmp, int width, int height)
+BMPA StretchBMPA(BMPA bmp, int width, int height)
 {
     BMPA newbmp;
     newbmp.width = width;

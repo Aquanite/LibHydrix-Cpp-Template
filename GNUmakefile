@@ -14,7 +14,7 @@ define DEFAULT_VAR =
 endef
 
 # Toolchain for building the 'limine' executable for the host.
-override DEFAULT_HOST_CC := compiler/bin/x86_64-elf-gcc
+override DEFAULT_HOST_CC := gcc
 $(eval $(call DEFAULT_VAR,HOST_CC,$(DEFAULT_HOST_CC)))
 override DEFAULT_HOST_CFLAGS := -g -O2 -pipe
 $(eval $(call DEFAULT_VAR,HOST_CFLAGS,$(DEFAULT_HOST_CFLAGS)))
@@ -80,7 +80,7 @@ $(IMAGE_NAME).iso: limine kernel
 		iso_root -o $(IMAGE_NAME).iso
 	./limine/limine bios-install $(IMAGE_NAME).iso
 	rm -rf iso_root
-	qemu-system-x86_64 -m 1G -cdrom $(IMAGE_NAME).iso -boot d -serial file:serial.log
+	qemu-system-x86_64 -m 4G -cpu max -cdrom $(IMAGE_NAME).iso -boot d -audiodev pa,id=speaker -machine pcspk-audiodev=speaker
 
 $(IMAGE_NAME).hdd: limine kernel
 	rm -f $(IMAGE_NAME).hdd
